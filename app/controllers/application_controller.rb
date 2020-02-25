@@ -1,5 +1,6 @@
 require "./config/environment"
 require "./app/models/user"
+require 'pry'
 class ApplicationController < Sinatra::Base
 
   configure do
@@ -17,13 +18,21 @@ class ApplicationController < Sinatra::Base
   end
 
   post "/signup" do
-    #your code here
-
+    user = User.new(:username => params[:username], :password => params[:password])
+    if user[:username].empty? || user[:password_digest] == nil
+      redirect "/failure"
+    end
+    user.save
+    redirect "/login"
   end
 
   get '/account' do
-    @user = User.find(session[:user_id])
-    erb :account
+    if logged_in?
+      @user = User.find(session[:user_id])
+      erb :account
+    else
+      redirect "/failure"
+    end 
   end
 
 
@@ -32,7 +41,13 @@ class ApplicationController < Sinatra::Base
   end
 
   post "/login" do
-    ##your code here
+    user = User.find_by(:username => params[:username])
+    if user && user.authenticate(params[:password])
+      session[:user_id] = user.id
+      redirect "/account"
+    else
+      redirect "/failure"
+    end
   end
 
   get "/failure" do
@@ -42,6 +57,46 @@ class ApplicationController < Sinatra::Base
   get "/logout" do
     session.clear
     redirect "/"
+  end
+
+  get "/deposit" do
+    if logged_in?
+      @user = User.find(session[:user_id])
+      erb :deposit
+    else
+      redirect "/failure"
+    end 
+  end
+
+  post "/deposit" do
+    @user = User.find(session[:user_id])
+    if params[:amount].to_f > 0
+      @user.balance += params[:amount].to_f
+      @user.save
+      redirect "/account"
+    else 
+      redirect "/failure"
+    end
+  end
+
+  get "/withdrawal" do
+    if logged_in?
+      @user = User.find(session[:user_id])
+      erb :withdrawal
+    else
+      redirect "/failure"
+    end 
+  end
+
+  post "/withdrawal" do
+    @user = User.find(session[:user_id])
+    if params[:amount].to_f > 0 && params[:amount].to_f <= @user.balance
+      @user.balance -= params[:amount].to_f
+      @user.save
+      redirect "/account"
+    else 
+      redirect "/failure"
+    end
   end
 
   helpers do
