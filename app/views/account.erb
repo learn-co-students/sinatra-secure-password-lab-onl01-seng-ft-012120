@@ -1,5 +1,16 @@
 <h1>Welcome</h1>
 
-<p>We are currently working on your account.</p>
+<h2>Dear <%=current_user.username%></h2>
+
+<h3>Your actual balance is: $ <%= current_user.display_balance %></h3>
+
+<% if @amount.empty? %>
+  <p>Insufficient found in your account Sorry!</p>
+<% end %>
+
+
+<form action="/deposit" method="post"><input type="number" name="deposit" id="deposit"><input type="submit" value="Deposit"></form>
+<form action="/withdraw" method="post"><input type="number" name="withdraw" id="withdraw"><input type="submit" value="withdraw"></form>
+
 
 <p><a href="/logout">Log Out</a></p>
