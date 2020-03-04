@@ -1,0 +1,5 @@
+<form action='/w_receipt' method ='POST'>
+    <label for='withdrawl'>Withdraw Amount:</label>
+    <input type ="number" max= "<%=@user.balance%>" min = 0 name ='withdrawl'>
+    <input type ='submit' value ="Withdraw">
+</form>

@@ -1,0 +1,5 @@
+<h1>Deposit to <%=@user.username%>'s account</h1>
+<p>Balance: $<%=@user.balance%></p>
+<p>Deposit: $<%=@deposit%></p>
+<%@user.balance = @user.balance + @deposit%>
+<h3>New Balance: $<%=@user.balance%></h3>
