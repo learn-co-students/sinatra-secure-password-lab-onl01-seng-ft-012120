@@ -19,8 +19,7 @@ class ApplicationController < Sinatra::Base
   post "/signup" do
     #your code here
     if params[:username]
-      @user = User.create(:username => params[:username], :password => params[:password])
-      @user.save
+      User.create(username: params[:username], password: params[:password])
       redirect '/account'
     else
       redirect '/failure'
@@ -39,44 +38,44 @@ class ApplicationController < Sinatra::Base
 
   post "/login" do
     ##your code here
-    @user = User.find_by(:username => params[:username])
+    @user = User.find_by(username: params[:username])
     if @user && @user.authenticate(params[:password])
       session[:user_id] = @user.id
-      redirect '/account'
+      redirect "/account"
     else
-      redirect '/failure'
+      redirect "/failure"
     end
   end
 
-  get '/withdraw' do 
-    @user = User.find(session[:user_id])
-    erb :withdraw
-  end
+  # get '/withdraw' do 
+  #   @user = User.find(session[:user_id])
+  #   erb :withdraw
+  # end
 
-  get '/deposit' do 
-    @user = User.find(session[:user_id])
-    erb :deposit
-  end
+  # get '/deposit' do 
+  #   @user = User.find(session[:user_id])
+  #   erb :deposit
+  # end
 
-  post '/w_receipt' do
-    @user = User.find(session[:user_id])
-    if params[:withdrawl]
-      @withdrawl = params[:withdrawl]
-      erb :w_receipt
-    else
-      redirect 'failure'
-    end
-  end
+  # post '/w_receipt' do
+  #   @user = User.find(session[:user_id])
+  #   if params[:withdrawl]
+  #     @withdrawl = params[:withdrawl]
+  #     erb :w_receipt
+  #   else
+  #     redirect 'failure'
+  #   end
+  # end
 
-  post '/d_receipt' do
-    @user = User.find(session[:user_id])
-    if params[:deposit]
-      @deposit = params[:deposit]
-      erb :d_receipt
-    else
-      redirect 'failure'
-    end
-  end
+  # post '/d_receipt' do
+  #   @user = User.find(session[:user_id])
+  #   if params[:deposit]
+  #     @deposit = params[:deposit]
+  #     erb :d_receipt
+  #   else
+  #     redirect 'failure'
+  #   end
+  # end
 
   get "/failure" do
     erb :failure
